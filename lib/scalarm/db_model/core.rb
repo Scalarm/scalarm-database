@@ -1,0 +1,2 @@
+require_relative 'core/mongo_active_record'
+require_relative 'core/encrypted_mongo_active_record'
