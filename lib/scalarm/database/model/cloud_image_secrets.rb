@@ -9,11 +9,11 @@
 #
 # other fields are cloud-specific, e.g. image_login, secret_password, secret_token
 
-module Scalarm
-  module DbModel
-    class CloudImageSecrets < EncryptedMongoActiveRecord
-      use_collection 'cloud_image_secrets'
-      attr_join :user, ScalarmUser
-    end
+require_relative '../core/mongo_active_record'
+
+module Scalarm::Database::Model
+  class CloudImageSecrets < Scalarm::Database::EncryptedMongoActiveRecord
+    use_collection 'cloud_image_secrets'
+    attr_join :user, ScalarmUser
   end
 end

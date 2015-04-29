@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'mocha/mini_test'
 
-require 'scalarm/db_model/core/mongo_active_record'
+require 'scalarm/database/core/mongo_active_record'
 
 class ConnectionInitTest < MiniTest::Test
   def setup
@@ -18,9 +18,9 @@ class ConnectionInitTest < MiniTest::Test
 
   def test_localhost_get_collection
     # TODO: drop collection first
-    init_result = Scalarm::DbModel::MongoActiveRecord.connection_init('localhost', 'scalarm_test_db')
+    init_result = Scalarm::Database::MongoActiveRecord.connection_init('localhost', 'scalarm_test_database')
     assert (init_result == true), "connection: #{init_result.to_s}, is mongo running on localhost?"
-    collection = Scalarm::DbModel::MongoActiveRecord.get_collection('test1')
+    collection = Scalarm::Database::MongoActiveRecord.get_collection('test1')
     refute_nil collection
     collection.save(hello: 'world')
     record = collection.find({hello: 'world'}, {limit: 1}).first

@@ -6,11 +6,13 @@
 #
 # other fields are user defined and should be of String class to enable encryption!
 
-module Scalarm
-  module DbModel
-    class CloudSecrets < EncryptedMongoActiveRecord
+require_relative '../core/encrypted_mongo_active_record'
+
+require_relative 'scalarm_user'
+
+module Scalarm::Database::Model
+    class CloudSecrets < Scalarm::Database::EncryptedMongoActiveRecord
       use_collection 'cloud_secrets'
       attr_join :user, ScalarmUser
     end
-  end
 end

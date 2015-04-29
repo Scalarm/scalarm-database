@@ -13,21 +13,24 @@
 # - public_host => public hostname of machine which redirects to ssh port
 # - public_ssh_port => port of public machine redirecting to ssh private port
 
-class CloudVmRecord < MongoActiveRecord
-  use_collection 'vm_records'
-  attr_join :image_secrets, CloudImageSecrets
+require_relative '../core/mongo_active_record'
 
-  def self.ids_auto_convert
-    false
-  end
+module Scalarm::Database::Model
+  class CloudVmRecord < Scalarm::Database::MongoActiveRecord
+    use_collection 'vm_records'
+    disable_ids_auto_convert!
 
-  def cloud_secrets
-    @cloud_secrets ||= CloudSecrets.find_by_query(cloud_name: cloud_name.to_s, user_id: user_id.to_s)
-  end
+    attr_join :image_secrets, CloudImageSecrets
 
-  # additional info for specific cloud should be provided by CloudClient
-  def to_s
-    "Id: #{vm_id}, Launched at: #{created_at}, Time limit: #{time_limit}, "
-    "SSH address: #{public_host}:#{public_ssh_port}"
+    def cloud_secrets
+      @cloud_secrets ||= CloudSecrets.find_by_query(cloud_name: cloud_name.to_s, user_id: user_id.to_s)
+    end
+
+    # additional info for specific cloud should be provided by CloudClient
+    def to_s
+      "Id: #{vm_id}, Launched at: #{created_at}, Time limit: #{time_limit}, "
+      "SSH address: #{public_host}:#{public_ssh_port}"
+    end
   end
 end
+

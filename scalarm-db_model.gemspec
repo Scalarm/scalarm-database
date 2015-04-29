@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'scalarm/db_model/version'
+require 'scalarm/database/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "scalarm-db_model"
-  spec.version       = Scalarm::DbModel::VERSION
+  spec.name          = "scalarm-database"
+  spec.version       = Scalarm::Database::VERSION
   spec.authors       = ["Jakub Liput"]
   spec.email         = ["jakub.liput@gmail.com"]
   spec.summary       = %q{An ODM (Object-Document Mapping), utils and models to use Scalarm database (MongoDB)}

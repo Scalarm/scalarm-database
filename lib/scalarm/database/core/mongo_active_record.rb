@@ -6,7 +6,7 @@ require 'json'
 require_relative 'mongo_active_record_utils'
 
 module Scalarm
-  module DbModel
+  module Database
     class MongoActiveRecord
       include Mongo
       include MongoActiveRecordUtils
@@ -15,6 +15,7 @@ module Scalarm
 
       @conditions = {}
       @options = {}
+      @@client = nil
 
       def self.ids_auto_convert
         true
@@ -67,7 +68,7 @@ module Scalarm
       def method_missing(method_name, *args, &block)
         #Rails.logger.debug("MongoRecord: #{method_name} - #{args.join(',')}")
         method_name = method_name.to_s; setter = false
-        if method_name.ends_with? '='
+        if method_name.end_with? '='
           method_name.chop!
           setter = true
         end
@@ -118,21 +119,26 @@ module Scalarm
         @attributes.delete('_id')
       end
 
+      def reload
+        @attributes = self.class.find_by_query(id: self.id).attributes
+        self
+      end
+
       def to_s
         if self.nil?
           'Nil'
         else
           <<-eos
-          MongoActiveRecord - #{self.class.name} - Attributes - #{@attributes}\n
+      MongoActiveRecord - #{self.class.name} - Attributes - #{@attributes}\n
           eos
         end
       end
 
       def to_h
         Hash[attributes.keys.map do |key|
-          value = self.send(key)
-          [key, (value.kind_of?(BSON::ObjectId) ? value.to_s : value)]
-        end]
+               value = self.send(key)
+               [key, (value.kind_of?(BSON::ObjectId) ? value.to_s : value)]
+             end]
       end
 
       def to_json
@@ -140,6 +146,10 @@ module Scalarm
       end
 
       #### Class Methods ####
+
+      def self.connected?
+        !@@client.nil?
+      end
 
       def self.collection_name
         raise 'This is an abstract method, which must be implemented by all subclasses'
@@ -191,41 +201,12 @@ module Scalarm
 
       def self.find_by(parameter, value)
         value = value.first if value.is_a? Enumerable
-
-        if parameter == 'id'
-          begin
-            value = BSON::ObjectId(value.to_s)
-            parameter = '_id'
-          rescue BSON::InvalidObjectId
-            return nil
-          end
-        end
-
-        attributes = self.collection.find_one({ parameter => value })
-
-        if attributes.nil?
-          nil
-        else
-          self.new(attributes)
-        end
+        self.find_by_query(parameter => value)
       end
 
       def self.find_all_by(parameter, value)
         value = value.first if value.is_a? Enumerable
-
-        if parameter == 'id'
-          begin
-            value = BSON::ObjectId(value.to_s)
-            parameter = '_id'
-          rescue BSON::InvalidObjectId
-            return nil
-          end
-        end
-
-        self.collection.find({parameter => value}).map do |attributes|
-          self.new(attributes)
-        end
-
+        self.find_all_by_query(parameter => value)
       end
 
       def self.get_database(db_name)
@@ -248,8 +229,21 @@ module Scalarm
 
           if key == :_id
             value = BSON::ObjectId(value.to_s)
-          elsif key.to_s.ends_with?('_id') and self.ids_auto_convert
-            value = Utils::to_bson_if_string(value)
+          elsif key.to_s.end_with?('_id') and self.ids_auto_convert
+            # some ugly hack - if ID can be converted to BSON (or is BSON) use both String and BSON in query
+            # otherwise, use only stringified value
+            bson_value = begin
+              Utils::to_bson_if_string(value)
+            rescue BSON::InvalidObjectId
+              nil
+            end
+
+            str_value = value.to_s
+            if bson_value
+              value = {'$in' => [str_value, bson_value]}
+            else
+              value = str_value
+            end
           end
 
           mongo_class.conditions[key] = value
@@ -286,17 +280,19 @@ module Scalarm
 
       def self.connection_init(storage_manager_url, db_name)
         begin
-          Rails.logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
+          # TODO: Rails dependency
+          # Rails.logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
 
           @@client = MongoClient.new(storage_manager_url.split(':')[0], storage_manager_url.split(':')[1], {
-              connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
-          })
+                                                                          connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
+                                                                      })
           @@db = @@client[db_name]
           @@grid = Mongo::Grid.new(@@db)
 
           return true
         rescue Exception => e
-          Rails.logger.debug "Could not initialize connection with MongoDB --- #{e}"
+          # TODO: Rails dependency
+          # Rails.logger.debug "Could not initialize connection with MongoDB --- #{e}"
           @@client = @@db = @@grid = nil
         end
 
@@ -304,12 +300,6 @@ module Scalarm
       end
 
       # UTILS
-
-      def self.parse_json_if_string(attribute)
-        define_method attribute do
-          Utils::parse_json_if_string(get_attribute(attribute.to_s))
-        end
-      end
 
       def self.next_sequence
         self.get_next_sequence(self.collection_name)
@@ -326,6 +316,5 @@ module Scalarm
       end
 
     end
-
   end
 end

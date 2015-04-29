@@ -8,7 +8,7 @@
 # record.save
 
 module Scalarm
-  module DbModel
+  module Database
     class EncryptedMongoActiveRecord < MongoActiveRecord
 
       def to_h
@@ -31,7 +31,7 @@ module Scalarm
         end
 
         setter = false
-        if method_name.ends_with? '='
+        if method_name.end_with? '='
           method_name.chop!
           setter = true
 
