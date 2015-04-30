@@ -23,6 +23,8 @@
 require_relative '../core/mongo_active_record'
 require_relative '../simulation_run_factory'
 
+require_relative '../logger'
+
 require_relative 'simulation'
 
 module Scalarm::Database::Model
@@ -63,8 +65,8 @@ module Scalarm::Database::Model
       cmd['enableSharding'] = collection.db.name
       begin
         Scalarm::Database::MongoActiveRecord.execute_raw_command_on('admin', cmd)
-      rescue Exception => e
-        Rails.logger.error(e)
+      rescue => e
+        Scalarm::Database::Logger.error(e)
       end
 
       cmd = BSON::OrderedHash.new
@@ -72,8 +74,8 @@ module Scalarm::Database::Model
       cmd['key'] = {'index' => 1}
       begin
         Scalarm::Database::MongoActiveRecord.execute_raw_command_on('admin', cmd)
-      rescue Exception => e
-        Rails.logger.error(e)
+      rescue => e
+        Scalarm::Database::Logger.error(e)
       end
     end
 

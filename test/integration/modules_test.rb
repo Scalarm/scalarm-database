@@ -9,16 +9,6 @@ class ModulesTest < MiniTest::Test
 
   def setup
     super
-
-    # TODO do something with logger
-    # TODO move up
-    @logger_mock = stub_everything 'logger' do
-      stubs(:debug)
-      stubs(:info)
-      stubs(:warn)
-      stubs(:error)
-    end
-    Rails.stubs(:logger).returns(@logger_mock)
   end
 
   def teardown

@@ -4,6 +4,7 @@ require 'mongo'
 require 'json'
 
 require_relative 'mongo_active_record_utils'
+require_relative '../logger'
 
 module Scalarm
   module Database
