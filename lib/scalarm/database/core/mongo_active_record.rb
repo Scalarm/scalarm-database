@@ -66,7 +66,7 @@ module Scalarm
 
       # handling getters and setters for object instance
       def method_missing(method_name, *args, &block)
-        #Rails.logger.debug("MongoRecord: #{method_name} - #{args.join(',')}")
+        Logger.debug("MongoRecord: #{method_name} - #{args.join(',')}")
         method_name = method_name.to_s; setter = false
         if method_name.end_with? '='
           method_name.chop!
@@ -280,8 +280,7 @@ module Scalarm
 
       def self.connection_init(storage_manager_url, db_name)
         begin
-          # TODO: Rails dependency
-          # Rails.logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
+          Logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
 
           @@client = MongoClient.new(storage_manager_url.split(':')[0], storage_manager_url.split(':')[1], {
                                                                           connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
@@ -290,9 +289,8 @@ module Scalarm
           @@grid = Mongo::Grid.new(@@db)
 
           return true
-        rescue Exception => e
-          # TODO: Rails dependency
-          # Rails.logger.debug "Could not initialize connection with MongoDB --- #{e}"
+        rescue => e
+          Logger.debug "Could not initialize connection with MongoDB --- #{e}"
           @@client = @@db = @@grid = nil
         end
 

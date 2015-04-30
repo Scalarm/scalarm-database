@@ -21,6 +21,10 @@ class ModulesTest < MiniTest::Test
     Rails.stubs(:logger).returns(@logger_mock)
   end
 
+  def teardown
+    super
+  end
+
   def test_cloud_secrets
 
     require 'scalarm/database/model/cloud_secrets'
@@ -61,26 +65,45 @@ class ModulesTest < MiniTest::Test
     end
   end
 
-  # TODO - fix
-  def test_simulation_runs
+  def test_simulation_runs_for_experiments
     require 'scalarm/database/model/experiment'
 
     exp1 = Scalarm::Database::Model::Experiment.new(name: 'e1')
     exp1.save
     exp1.reload
-
-    exp1.save_simulation({one: 'two'})
-    exp1.save_simulation({one: 'three'})
+    exp1.create_simulation_table
 
     exp2 = Scalarm::Database::Model::Experiment.new(name: 'e2')
     exp2.save
     exp2.reload
+    exp2.create_simulation_table
 
-    exp2.save_simulation({one: 'two', two: 1})
-    exp2.save_simulation({one: 'two', two: 2})
+    exp1_run_class = Scalarm::Database::SimulationRunFactory.for_experiment(exp1.id)
+    exp1_run_class.new(hello: 1, world: 1).save
+    exp1_run_class.new(hello: 2, world: 2).save
 
-    assert_equal 1, exp1.simulation_runs.where(one: 'two').count
-    assert_equal 2, exp2.simulation_runs.where(one: 'two').count
+    exp2_run_class = Scalarm::Database::SimulationRunFactory.for_experiment(exp2.id)
+    exp2_run_class.new(hello: 1, world: 3).save
+    exp2_run_class.new(hello: 2, world: 4).save
+
+    assert_equal 2, exp1.simulation_runs.count
+    assert_equal 1, exp1.simulation_runs.find_by_hello(1).world
+  end
+
+  def test_simulation_run_factory
+    require 'scalarm/database/simulation_run_factory'
+
+    run_class_a = Scalarm::Database::SimulationRunFactory.for_experiment('a')
+    run_class_a.new(a: 1, b: 2).save
+    records_a = run_class_a.where(a: 1)
+    assert_equal 1, records_a.count
+    assert_equal 2, records_a.first.b
+
+    run_class_b = Scalarm::Database::SimulationRunFactory.for_experiment('b')
+    run_class_b.new(a: 1, b: 3).save
+    records_b = run_class_b.where(a: 1)
+    assert_equal 1, records_b.count
+    assert_equal 3, records_b.first.b
   end
 
 end

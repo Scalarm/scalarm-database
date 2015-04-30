@@ -31,7 +31,7 @@ module Scalarm::Database::Model
     attr_join :progress_monitor, SimulationProgressMonitor
 
     def set_simulation_binaries(filename, binary_data)
-      @attributes['simulation_binaries_id'] = @@grid.put(binary_data, :filename => filename)
+      @attributes['simulation_binaries_id'] = @@grid  .put(binary_data, :filename => filename)
     end
 
     def simulation_binaries
