@@ -109,10 +109,6 @@ module Scalarm::Database::Model
       Scalarm::Database::SimulationRunFactory.for_experiment(id)
     end
 
-    def save_and_cache
-      self.save
-    end
-
   end
 
 

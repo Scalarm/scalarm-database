@@ -23,8 +23,6 @@ and Scalarm model classes}
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency 'mocha'
 
-  # TODO: remove rails dependency
-  spec.add_runtime_dependency 'rails', '4.1.1'
   spec.add_runtime_dependency 'bson'
   spec.add_runtime_dependency 'bson_ext'
   spec.add_runtime_dependency 'mongo'
