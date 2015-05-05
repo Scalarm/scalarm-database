@@ -1,3 +1,5 @@
+require 'scalarm/database/utils'
+
 module Scalarm
   module Database
     module MongoActiveRecordUtils

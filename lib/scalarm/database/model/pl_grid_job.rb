@@ -23,10 +23,6 @@ module Scalarm::Database::Model
       @credentials ||= GridCredentials.find_by_user_id(user_id)
     end
 
-    def resource_id
-      self.job_id
-    end
-
     def to_s
       "JobId: #{job_id}, Scheduled at: #{created_at}, ExperimentId: #{experiment_id}"
     end

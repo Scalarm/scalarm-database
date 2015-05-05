@@ -4,6 +4,9 @@
 
 require_relative '../core/mongo_active_record'
 
+require_relative 'private_machine_credentials'
+require_relative 'experiment'
+
 module Scalarm::Database::Model
   class PrivateMachineRecord < Scalarm::Database::MongoActiveRecord
     # SimulationManagerRecord
@@ -13,14 +16,6 @@ module Scalarm::Database::Model
     attr_join :experiment, Experiment
 
     disable_ids_auto_convert!
-
-    def resource_id
-      task_desc
-    end
-
-    def task_desc
-      "#{credentials.nil? ? '[credentials missing!]' : credentials.machine_desc} (#{pid.nil? ? 'init' : pid})"
-    end
 
   end
 end

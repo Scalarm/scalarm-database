@@ -46,6 +46,31 @@ module Scalarm::Database
           end
         end
 
+        def meet_constraints?(constraints)
+          return true if constraints.blank?
+
+          args = arguments.split(',')
+          vals = values.split(',')
+          constraints.each do |constraint|
+            source_value = vals[args.index(constraint['source_parameter'])].to_f
+            target_value = vals[args.index(constraint['target_parameter'])].to_f
+            #Rails.logger.debug("Checking if #{source_value} #{constraint['condition']} #{target_value}")
+            unless source_value.send(constraint['condition'], target_value)
+              return false
+            end
+          end
+
+          true
+        end
+
+        def rollback!
+          Rails.logger.debug("Rolling back SimulationRun: #{id}")
+
+          self.to_sent = true
+          experiment.progress_bar_update(self.index, 'rollback')
+          self.save
+        end
+
       end
 
     end

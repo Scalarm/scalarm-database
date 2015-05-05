@@ -105,8 +105,36 @@ module Scalarm::Database::Model
     attr_join :simulation, Simulation
     attr_join :user, ScalarmUser
 
+    ID_DELIM = '___'
+
     def simulation_runs
       Scalarm::Database::SimulationRunFactory.for_experiment(id)
+    end
+
+    def self.visible_to(user)
+      where({'$or' => [{user_id: user.id}, {shared_with: {'$in' => [user.id]}}]})
+    end
+
+    def parameter_uid(entity_group, entity, parameter)
+      Experiment.parameter_uid(entity_group, entity, parameter)
+    end
+
+    def self.parameter_uid(entity_group, entity, parameter)
+      entity_group_id = if entity_group.include?('id') || entity_group.include?('entities')
+                          entity_group['id'] || nil
+                        else
+                          entity_group
+                        end
+
+      entity_id = if entity.include?('id') || entity.include?('parameters')
+                    entity['id'] || nil
+                  else
+                    entity
+                  end
+
+      parameter_id = parameter.include?('id') ? parameter['id'] : parameter
+
+      [ entity_group_id, entity_id, parameter_id ].compact.join(ID_DELIM)
     end
 
   end

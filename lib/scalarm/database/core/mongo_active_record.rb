@@ -1,7 +1,7 @@
-require 'rails'
 require 'bson'
 require 'mongo'
 require 'json'
+require 'active_support/core_ext/object/deep_dup'
 
 require_relative 'mongo_active_record_utils'
 require_relative '../logger'
