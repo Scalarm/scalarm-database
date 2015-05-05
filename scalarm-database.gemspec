@@ -23,6 +23,7 @@ and Scalarm model classes}
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency 'mocha'
 
+  spec.add_runtime_dependency 'activesupport'
   spec.add_runtime_dependency 'bson'
   spec.add_runtime_dependency 'bson_ext'
   spec.add_runtime_dependency 'mongo'
