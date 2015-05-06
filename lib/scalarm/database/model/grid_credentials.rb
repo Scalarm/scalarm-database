@@ -62,8 +62,6 @@ module Scalarm::Database::Model
       decipher
     end
 
-    private_class_method :cipher, :decipher
-
   end
 end
 

@@ -7,6 +7,8 @@
 # record.secret_password = 'my_password'
 # record.save
 
+require_relative 'mongo_active_record'
+
 module Scalarm
   module Database
     class EncryptedMongoActiveRecord < MongoActiveRecord
