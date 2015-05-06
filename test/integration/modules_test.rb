@@ -96,4 +96,11 @@ class ModulesTest < MiniTest::Test
     assert_equal 3, records_b.first.b
   end
 
+  def test_simulation_run
+    require 'scalarm/database/simulation_run_factory'
+
+    run_class_a = Scalarm::Database::SimulationRunFactory.for_experiment('a')
+    run_class_a.create_table
+  end
+
 end

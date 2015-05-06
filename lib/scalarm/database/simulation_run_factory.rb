@@ -1,6 +1,8 @@
 require_relative 'core/mongo_active_record'
 require_relative 'logger'
 
+require_relative 'model/experiment'
+
 module Scalarm::Database
 
   # Can be applied only for MongoActiveRecord classes
@@ -9,7 +11,27 @@ module Scalarm::Database
       super(conditions, {sort: [['index', :asc]]}.merge(options))
     end
 
-    def self.create_table
+    def meet_constraints?(constraints)
+      return true if constraints.blank?
+
+      args = arguments.split(',')
+      vals = values.split(',')
+      constraints.each do |constraint|
+        source_value = vals[args.index(constraint['source_parameter'])].to_f
+        target_value = vals[args.index(constraint['target_parameter'])].to_f
+        #Rails.logger.debug("Checking if #{source_value} #{constraint['condition']} #{target_value}")
+        unless source_value.send(constraint['condition'], target_value)
+          return false
+        end
+      end
+
+      true
+    end
+  end
+
+  # Defines SimulationRun class methods
+  module SimulationRunClass
+    def create_table
       raise('No Simulation Run DB available') if collection.nil?
 
       %w(index is_done to_sent).each do |index_sym|
@@ -36,30 +58,13 @@ module Scalarm::Database
         Logger.error(e)
       end
     end
-
-    def meet_constraints?(constraints)
-      return true if constraints.blank?
-
-      args = arguments.split(',')
-      vals = values.split(',')
-      constraints.each do |constraint|
-        source_value = vals[args.index(constraint['source_parameter'])].to_f
-        target_value = vals[args.index(constraint['target_parameter'])].to_f
-        #Rails.logger.debug("Checking if #{source_value} #{constraint['condition']} #{target_value}")
-        unless source_value.send(constraint['condition'], target_value)
-          return false
-        end
-      end
-
-      true
-    end
-
   end
 
   # Allows to create SimulationRun model (class) dedicated for specific Experiment
   class SimulationRunFactory
     def self.for_experiment(experiment_id)
       Class.new(Scalarm::Database::MongoActiveRecord) do |c|
+        extend SimulationRunClass
         include SimulationRun
 
         def self.collection_name_for(experiment_id)
@@ -67,7 +72,7 @@ module Scalarm::Database
         end
 
         use_collection collection_name_for(experiment_id)
-        attr_join :experiment, Experiment
+        attr_join :experiment, Scalarm::Database::Model::Experiment
       end
     end
   end

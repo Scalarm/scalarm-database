@@ -111,6 +111,10 @@ module Scalarm::Database::Model
       Scalarm::Database::SimulationRunFactory.for_experiment(id)
     end
 
+    def simulation_manager_temp_passwords
+      SimulationManagerTempPassword.where(experiment_id: id).to_a
+    end
+
     def self.visible_to(user)
       where({'$or' => [{user_id: user.id}, {shared_with: {'$in' => [user.id]}}]})
     end
