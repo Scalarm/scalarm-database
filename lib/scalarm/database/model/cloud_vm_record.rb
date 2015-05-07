@@ -1,21 +1,23 @@
-# Binds Scalarm user, experiment and cloud virtual machine instance
-# providing static information about VM instance (set once)
-#
-# Fields:
-# * fields from SimulationManagerRecords
-#
-# - cloud_name => string - name of the cloud, e.g. 'pl_cloud', 'amazon'
-# - image_secrets_id => id of CloudImageSecrets
-# - vm_id => string - instance id of the vm
-# - pid => integer - PID of SimulationManager application (if executed)
-# - instance_type => string - name of instance type
-#
-# - public_host => public hostname of machine which redirects to ssh port
-# - public_ssh_port => port of public machine redirecting to ssh private port
-
 require_relative '../core/mongo_active_record'
 
 module Scalarm::Database::Model
+
+  ##
+  # Binds Scalarm user, experiment and cloud virtual machine instance
+  # providing static information about VM instance (set once)
+  #
+  # ==== Fields:
+  # Contains fields from SimulationManagerRecords
+  #
+  # cloud_name:: string - name of the cloud, e.g. 'pl_cloud', 'amazon'
+  # image_secrets_id:: ObjectId - id of CloudImageSecrets;
+  #     a foreign key to access information about image that was instatiated
+  # vm_id:: string - instance id of the vm
+  # pid:: integer - PID of SimulationManager application (if executed)
+  # instance_type:: string - name of instance type
+  #
+  # public_host: string - public hostname of machine which redirects to ssh port
+  # public_ssh_port: string - port of public machine redirecting to ssh private port
   class CloudVmRecord < Scalarm::Database::MongoActiveRecord
     use_collection 'vm_records'
     disable_ids_auto_convert!

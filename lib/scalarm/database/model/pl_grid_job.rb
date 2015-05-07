@@ -1,16 +1,18 @@
-# Specific attributes:
-# job_id => string - queue system specific id of the job
-# scheduler_type => string - short name of scheduler, eg. pbs
-# grant_id
-# nodes - nodes count
-# ppn - cores per node count
-# plgrid_host - host of PL-Grid, eg. zeus.cyfronet.pl
-#
-# Note that some attributes are used only by some queuing system facades
-
 require_relative '../core/mongo_active_record'
 
 module Scalarm::Database::Model
+
+  ##
+  # Represents job in any of PL-Grid resources manager.
+  # ==== Fields:
+  # job_id:: string - queue system specific id of the job
+  # scheduler_type:: string - short name of scheduler, eg. pbs
+  # grant_id::
+  # nodes:: nodes count
+  # ppn:: cores per node count
+  # plgrid_host:: host of PL-Grid, eg. zeus.cyfronet.pl
+  #
+  # Note that some attributes are used only by some queuing system facades
   class PlGridJob < Scalarm::Database::MongoActiveRecord
     # SimulationManagerRecord
 

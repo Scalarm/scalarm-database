@@ -1,14 +1,17 @@
-# Fields:
-# - user_id
-# - login
-# - password (not needed if has secret_proxy)
-# - secret_proxy (not needed if has password)
-
 require 'base64'
 
 require_relative '../core'
 
 module Scalarm::Database::Model
+
+  ##
+  # Store credentials used for PL-Grid access
+  #
+  # ==== Fields:
+  # user_id:: Scalarm's owner of credentials
+  # login:: PL-Grid user name (same as in PL-Grid Portal and on UI machines)
+  # password:: (not needed if has secret_proxy)
+  # secret_proxy:: (not needed if has password)
   class GridCredentials < Scalarm::Database::MongoActiveRecord
     @@CIPHER_NAME = 'aes-256-cbc'
     @@CIPHER_KEY = "tC\x7F\x9Er\xA6\xAFU\x88\x19\x9B\x0F\xDD\x88O]6\xA0\xAD\x8B\xBF,4\x06<\xC0[\x03\xC7\x11\x90\x10"

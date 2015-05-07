@@ -1,16 +1,3 @@
-# Attributes
-#_id:
-#name:
-#description
-#input_specification:
-#user_id:
-#simulation_binaries_id:
-#input_writer_id
-#executor_id
-#output_reader_id
-#progress_monitor_id
-#created_at: timestamp
-
 require_relative 'scalarm_user'
 require_relative 'simulation_executor'
 require_relative 'simulation_input_writer'
@@ -18,6 +5,23 @@ require_relative 'simulation_output_reader'
 require_relative 'simulation_progress_monitor'
 
 module Scalarm::Database::Model
+
+  ##
+  # Represents a simulation scenario - entity describing parameters of simulation,
+  # files of simulation and adapters (wrapper scripts).
+  #
+  # ==== Fields:
+  #
+  # name::
+  # description::
+  # input_specification::
+  # user_id::
+  # simulation_binaries_id::
+  # input_writer_id::
+  # executor_id::
+  # output_reader_id::
+  # progress_monitor_id::
+  # created_at:: timestamp
   class Simulation < Scalarm::Database::MongoActiveRecord
     use_collection 'simulations'
 

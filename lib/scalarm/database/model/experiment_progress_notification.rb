@@ -1,6 +1,9 @@
 require 'scalarm/database/core/capped_mongo_active_record'
 
 module Scalarm::Database
+
+  ##
+  # A capped collection used for gathering information about experiment progress changes
   class ExperimentProgressNotification < Scalarm::Database::CappedMongoActiveRecord
     use_collection 'experiment_progress_notifications'
 
