@@ -107,6 +107,7 @@ module Scalarm
           id = self.class.collection.save(@attributes)
           @attributes['_id'] = id
         end
+        self
       end
 
       def save_if_exists

@@ -14,9 +14,9 @@ module Scalarm::Database::Model
 
     def self.create_new_password_for(sm_uuid, experiment_id)
       password = SecureRandom.base64
-      temp_pass = SimulationManagerTempPassword.new(sm_uuid: sm_uuid,
-                                                    password: password,
-                                                    experiment_id: experiment_id)
+      temp_pass = self.new(sm_uuid: sm_uuid,
+                           password: password,
+                           experiment_id: experiment_id)
       temp_pass.save
       temp_pass
     end
