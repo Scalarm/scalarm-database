@@ -136,6 +136,23 @@ module Scalarm::Database::Model
       [ entity_group_id, entity_id, parameter_id ].compact.join(ID_DELIM)
     end
 
+    def get_parameter_ids
+      parameter_ids = []
+
+      self.experiment_input.each do |group|
+        group_id = group['id']
+        group['entities'].each do |entity|
+          entity_id = entity['id']
+          entity['parameters'].each do |parameter|
+            parameter_id = parameter['id']
+            parameter_ids << parameter_uid(group, entity, parameter)
+          end
+        end
+      end
+
+      parameter_ids
+    end
+
   end
 
 
