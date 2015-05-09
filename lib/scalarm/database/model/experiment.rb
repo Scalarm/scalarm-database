@@ -4,6 +4,8 @@ require_relative '../simulation_run_factory'
 require_relative '../logger'
 
 require_relative 'simulation'
+require_relative 'scalarm_user'
+require_relative 'simulation_manager_temp_password'
 
 module Scalarm::Database::Model
 

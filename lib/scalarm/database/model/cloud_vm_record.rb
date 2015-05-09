@@ -1,5 +1,8 @@
 require_relative '../core/mongo_active_record'
 
+require_relative 'cloud_secrets'
+require_relative 'cloud_image_secrets'
+
 module Scalarm::Database::Model
 
   ##

@@ -3,6 +3,7 @@ require_relative 'simulation_executor'
 require_relative 'simulation_input_writer'
 require_relative 'simulation_output_reader'
 require_relative 'simulation_progress_monitor'
+require_relative 'experiment'
 
 module Scalarm::Database::Model
 

@@ -1,3 +1,5 @@
+require 'securerandom'
+
 require_relative '../core/mongo_active_record'
 require_relative 'experiment'
 require_relative 'scalarm_user'

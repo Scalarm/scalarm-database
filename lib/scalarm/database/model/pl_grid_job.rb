@@ -1,4 +1,6 @@
 require_relative '../core/mongo_active_record'
+require_relative 'experiment'
+require_relative 'grid_credentials'
 
 module Scalarm::Database::Model
 
