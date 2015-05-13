@@ -3,10 +3,6 @@ require_relative '../simulation_run_factory'
 
 require_relative '../logger'
 
-require_relative 'simulation'
-require_relative 'scalarm_user'
-require_relative 'simulation_manager_temp_password'
-
 module Scalarm::Database::Model
 
   ##
@@ -97,6 +93,10 @@ module Scalarm::Database::Model
   # (OBSOLETE) - experiment_id: ObjectId - same as _id # TODO: check
   #
   class Experiment < Scalarm::Database::MongoActiveRecord
+    require_relative 'simulation'
+    require_relative 'scalarm_user'
+    require_relative 'simulation_manager_temp_password'
+
     use_collection 'experiments'
 
     attr_join :simulation, Simulation

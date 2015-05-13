@@ -1,10 +1,3 @@
-require_relative 'scalarm_user'
-require_relative 'simulation_executor'
-require_relative 'simulation_input_writer'
-require_relative 'simulation_output_reader'
-require_relative 'simulation_progress_monitor'
-require_relative 'experiment'
-
 module Scalarm::Database::Model
 
   ##
@@ -24,6 +17,13 @@ module Scalarm::Database::Model
   # progress_monitor_id::
   # created_at:: timestamp
   class Simulation < Scalarm::Database::MongoActiveRecord
+    require_relative 'scalarm_user'
+    require_relative 'simulation_executor'
+    require_relative 'simulation_input_writer'
+    require_relative 'simulation_output_reader'
+    require_relative 'simulation_progress_monitor'
+    require_relative 'experiment'
+
     use_collection 'simulations'
 
     # TODO: when all data in base will be migrated to json-only, this will be unnecessarily
