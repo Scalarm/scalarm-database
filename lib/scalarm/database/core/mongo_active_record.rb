@@ -68,7 +68,6 @@ module Scalarm
 
       # handling getters and setters for object instance
       def method_missing(method_name, *args, &block)
-        Logger.debug("MongoRecord: #{method_name} - #{args.join(',')}")
         method_name = method_name.to_s; setter = false
         if method_name.end_with? '='
           method_name.chop!
