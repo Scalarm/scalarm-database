@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{An ODM (Object-Document Mapping), utils and models to use Scalarm database (MongoDB)}
   spec.description   = %q{Contains MongoActiveRecord, which is a base to create MongoDB models (similar to ActiveRecords)
 and Scalarm model classes}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/Scalarm/scalarm-database"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
