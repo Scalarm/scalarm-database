@@ -5,6 +5,8 @@ module DBHelper
   DATABASE_NAME = 'scalarm_db_test'
 
   def setup
+    Scalarm::Database::MongoActiveRecord.set_encryption_key('test_key')
+
     unless Scalarm::Database::MongoActiveRecord.connected?
       raise StandardError.new('Connection to database failed') unless Scalarm::Database::MongoActiveRecord.connection_init('localhost', DATABASE_NAME)
       puts "Connecting to database #{DATABASE_NAME}"

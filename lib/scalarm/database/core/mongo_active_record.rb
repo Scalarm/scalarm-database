@@ -2,6 +2,7 @@ require 'bson'
 require 'mongo'
 require 'json'
 require 'active_support/core_ext/object/deep_dup'
+require 'encryptor'
 
 require_relative 'mongo_active_record_utils'
 require_relative '../logger'
@@ -280,6 +281,10 @@ module Scalarm
 
       # INITIALIZATION STUFF
 
+      def self.init!(mongodb_url, db_name, encryption_key)
+        connection_init(mongodb_url, db_name)
+      end
+
       def self.connection_init(storage_manager_url, db_name)
         begin
           Logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
@@ -297,6 +302,10 @@ module Scalarm
         end
 
         false
+      end
+
+      def self.set_encryption_key(key)
+        Encryptor.default_options.merge!(key: key)
       end
 
       # UTILS
