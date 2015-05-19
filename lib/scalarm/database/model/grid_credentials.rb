@@ -2,6 +2,9 @@ require 'base64'
 
 require_relative '../core'
 
+require_relative 'scalarm_user'
+require_relative 'grid_credentials'
+
 module Scalarm::Database::Model
 
   ##

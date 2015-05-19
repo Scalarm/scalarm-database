@@ -299,6 +299,7 @@ module Scalarm
         rescue => e
           Logger.debug "Could not initialize connection with MongoDB --- #{e}"
           @@client = @@db = @@grid = nil
+          raise
         end
 
         false

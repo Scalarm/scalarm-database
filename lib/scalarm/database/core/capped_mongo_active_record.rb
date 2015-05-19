@@ -1,3 +1,5 @@
+require_relative 'mongo_active_record'
+
 module Scalarm::Database
   class CappedMongoActiveRecord < MongoActiveRecord
 

@@ -103,4 +103,11 @@ class ModulesTest < MiniTest::Test
     run_class_a.create_table
   end
 
+  def test_plgridjob
+    require 'scalarm/database/model/pl_grid_job'
+    j = Scalarm::Database::Model::PlGridJob.new(a: 'b')
+    j.save
+    assert_equal 1, Scalarm::Database::Model::PlGridJob.where(a: 'b').count
+  end
+
 end

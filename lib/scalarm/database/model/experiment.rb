@@ -3,8 +3,6 @@ require_relative '../simulation_run_factory'
 
 require_relative '../logger'
 
-require_relative 'simulation'
-
 module Scalarm::Database::Model
 
   ##
@@ -95,6 +93,10 @@ module Scalarm::Database::Model
   # (OBSOLETE) - experiment_id: ObjectId - same as _id # TODO: check
   #
   class Experiment < Scalarm::Database::MongoActiveRecord
+    require_relative 'simulation'
+    require_relative 'scalarm_user'
+    require_relative 'simulation_manager_temp_password'
+
     use_collection 'experiments'
 
     attr_join :simulation, Simulation
@@ -134,6 +136,23 @@ module Scalarm::Database::Model
       parameter_id = parameter.include?('id') ? parameter['id'] : parameter
 
       [ entity_group_id, entity_id, parameter_id ].compact.join(ID_DELIM)
+    end
+
+    def get_parameter_ids
+      parameter_ids = []
+
+      self.experiment_input.each do |group|
+        group_id = group['id']
+        group['entities'].each do |entity|
+          entity_id = entity['id']
+          entity['parameters'].each do |parameter|
+            parameter_id = parameter['id']
+            parameter_ids << parameter_uid(group, entity, parameter)
+          end
+        end
+      end
+
+      parameter_ids
     end
 
   end

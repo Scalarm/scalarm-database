@@ -1,5 +1,7 @@
 require_relative '../core/encrypted_mongo_active_record'
 
+require_relative 'scalarm_user'
+
 module Scalarm::Database::Model
 
   ##

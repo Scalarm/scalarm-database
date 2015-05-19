@@ -1,3 +1,5 @@
+require 'securerandom'
+
 require_relative '../core/mongo_active_record'
 require_relative 'experiment'
 require_relative 'scalarm_user'
@@ -14,7 +16,8 @@ module Scalarm::Database::Model
   # experiment_id:: id of an experiment which should be calculated by Simulation Manager with this temp password
   class SimulationManagerTempPassword < Scalarm::Database::MongoActiveRecord
     use_collection 'simulation_manager_temp_passwords'
-    attr_join :experiment, Experiment
+    # TODO attr_join by const
+    # attr_join :experiment, Experiment
 
     def self.create_new_password_for(sm_uuid, experiment_id)
       password = SecureRandom.base64
