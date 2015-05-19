@@ -8,6 +8,11 @@ class LoggerTest < MiniTest::Test
     Scalarm::Database::Logger.deregister_all
   end
 
+  def teardown
+    Scalarm::Database::Logger.deregister_all
+  end
+
+
   def test_empty_logger
     Scalarm::Database::Logger.debug('b')
     Scalarm::Database::Logger.info('a')
@@ -26,6 +31,23 @@ class LoggerTest < MiniTest::Test
     Scalarm::Database::Logger.register(other_logger)
 
     Scalarm::Database::Logger.info('msg')
+  end
+
+  def test_deregister_all
+    one = mock 'two' do
+      expects(:info).never
+    end
+
+    two = mock 'two' do
+      expects(:info).never
+    end
+
+    Scalarm::Database::Logger::register(one)
+    Scalarm::Database::Logger::register(two)
+
+    Scalarm::Database::Logger.deregister_all
+
+    Scalarm::Database::Logger.info
   end
 
 end

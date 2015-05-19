@@ -51,11 +51,14 @@ module Scalarm::Database
       raise('No Simulation Run DB available') if collection.nil?
 
       %w(index is_done to_sent).each do |index_sym|
-        unless collection.index_information.include?(index_sym.to_s)
-          collection.create_index([[index_sym.to_s, Mongo::ASCENDING]])
-        end
+        # checking index_informations disabled due to "no collection" problem
+        # before initialization
+        #unless collection.index_information.include?(index_sym.to_s)
+        collection.create_index([[index_sym.to_s, Mongo::ASCENDING]])
+        #end
       end
 
+      # FIXME error-causing code
       # sharding collection
       cmd = BSON::OrderedHash.new
       cmd['enableSharding'] = collection.db.name

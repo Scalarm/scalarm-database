@@ -49,7 +49,7 @@ class ModulesTest < MiniTest::Test
       record = model_class.new my_name: model_class.name
       record.save
 
-      assert_equal 1, model_class.count
+      assert_equal 1, model_class.count, "Too many records in #{model_class}: #{model_class.all}"
       r_record = model_class.find_by_id(record.id)
       assert model_class.name, r_record.my_name
     end
