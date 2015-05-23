@@ -147,6 +147,14 @@ module Scalarm
         to_h.to_json
       end
 
+      ##
+      # Converts this object to object of MongoActiveRecord class "record_class"
+      # by copying attributes.
+      def convert_to(record_class)
+        record_class.new(self.attributes)
+      end
+
+
       #### Class Methods ####
 
       def self.connected?

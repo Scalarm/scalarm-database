@@ -151,4 +151,28 @@ class MongoActiveRecordTest < MiniTest::Test
     assert_equal joined_record, record.joined_record_not_cached
     assert_equal joined_record, record.joined_record_not_cached
   end
+
+  class FirstRecord < Scalarm::Database::MongoActiveRecord
+    def foo
+      self.bar.to_i * 2
+    end
+  end
+
+  class SecondRecord < Scalarm::Database::MongoActiveRecord
+    def foo
+      self.bar.to_i * 3
+    end
+  end
+
+  def test_convert_a_to_b
+    first = FirstRecord.new(bar: 10)
+
+    assert_equal 20, first.foo
+
+    second = first.convert_to(SecondRecord)
+
+    assert_equal 20, first.foo
+    assert_equal 10, second.bar
+    assert_equal 30, second.foo
+  end
 end
