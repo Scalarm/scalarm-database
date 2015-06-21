@@ -219,11 +219,22 @@ module Scalarm
         self.find_all_by_query(parameter => value)
       end
 
-      def self.get_database(db_name)
+      ##
+      # Get Mongo database onbject only if MongoActiveRecord
+      # was initialized earlier with connection_init.
+      # If connection_init was invoked with username and password,
+      # these values will be used to authenticate to this db.
+      # Use nil to override and force disable authetication for this db.
+      # @param [String] db_name database name to get
+      # @param [String] username optional username to authenticate
+      # @param [String] password optional password to authenticate
+      def self.get_database(db_name, username=@@username, password=@@password)
         if @@client.nil?
           nil
         else
-          @@client[db_name]
+          db = @@client[db_name]
+          db.authenticate(username, password) if username and password
+          db
         end
       end
 
@@ -288,24 +299,46 @@ module Scalarm
 
       # INITIALIZATION STUFF
 
-      def self.init!(mongodb_url, db_name, encryption_key)
-        connection_init(mongodb_url, db_name)
+      ##
+      # Backward-compatible alias for connection_init
+      def self.init!(*args)
+        connection_init(*args)
       end
 
-      def self.connection_init(storage_manager_url, db_name)
-        begin
-          Logger.debug("MongoActiveRecord initialized with URL '#{storage_manager_url}' and DB '#{db_name}'")
+      ##
+      # Initializes global connection for MongoActiveRecords and sets default database
+      # to use with MongoActiveRecord instances
+      # @param [String] mongodb_address host:port of mongodb server
+      # @param [String] db_name name of database (often it's "scalarm_db")
+      # @param [Hash] options additional params: Symbol => Object
+      #  - username: username to use if using authentication; leave nil to disable auth
+      #  - password: password to use if using authentication; leave nit to disable auth
+      def self.connection_init(mongodb_address, db_name, options=nil)
+        options ||= {}
+        username = options[:username]
+        password = options[:password]
 
-          @@client = MongoClient.new(storage_manager_url.split(':')[0], storage_manager_url.split(':')[1], {
-                                                                          connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
-                                                                      })
-          @@db = @@client[db_name]
+        begin
+          Logger.debug("MongoActiveRecord initialized with URL '#{mongodb_address}' and DB '#{db_name}'")
+
+          mongo_host, mongo_port = mongodb_address.split(':')
+          @@client = MongoClient.new(mongo_host,
+                                     mongo_port,
+                                     connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
+          )
+
+          @@username = username
+          @@password = password
+          @@db = get_database(db_name, username, password)
+
           @@grid = Mongo::Grid.new(@@db)
 
           return true
         rescue => e
           Logger.debug "Could not initialize connection with MongoDB --- #{e}"
           @@client = @@db = @@grid = nil
+
+          # changed Scalarm::ServiceCore: connection_init failure is fatal
           raise
         end
 
