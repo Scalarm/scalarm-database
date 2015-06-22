@@ -233,9 +233,15 @@ module Scalarm
           nil
         else
           db = @@client[db_name]
-          db.authenticate(username, password) if username and password
+          if username and password and not db_authenticated?(db_name)
+            db.authenticate(username, password)
+          end
           db
         end
+      end
+
+      def self.db_authenticated?(db_name)
+        not (@@client.auths.select {|a| a[:db_name] == db_name }).empty?
       end
 
       # chaining capabilities
