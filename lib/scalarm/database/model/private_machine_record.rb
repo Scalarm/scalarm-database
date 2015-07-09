@@ -10,6 +10,7 @@ module Scalarm::Database::Model
   # ==== Fields:
   # credentials_id:: id of PrivateMachineCredentials
   # pid:: PID of SimulationManager process executed at remote machine
+  # ppn:: number of cores on the machine
   class PrivateMachineRecord < Scalarm::Database::MongoActiveRecord
     # SimulationManagerRecord
     use_collection 'private_machine_records'
