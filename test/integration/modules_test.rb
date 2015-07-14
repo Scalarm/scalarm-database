@@ -41,7 +41,7 @@ class ModulesTest < MiniTest::Test
 
     mongo_models = ((Scalarm::Database::Model.constants.collect do |c|
       Object.const_get("Scalarm::Database::Model::#{c}")
-    end).select {|cls| cls < Scalarm::Database::MongoActiveRecord})
+    end).select {|cls| (cls < Scalarm::Database::MongoActiveRecord) and not (cls < Scalarm::Database::CappedMongoActiveRecord)})
 
     refute_empty mongo_models
 

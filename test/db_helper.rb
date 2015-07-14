@@ -20,7 +20,7 @@ module DBHelper
     Scalarm::Database::MongoActiveRecord.connection_init('localhost', DATABASE_NAME)
     db = Scalarm::Database::MongoActiveRecord.get_database(DATABASE_NAME)
     db.collections.each do |collection|
-      collection.remove unless collection.name.start_with? 'system.'
+      collection.remove unless collection.name.start_with? 'system.' or collection.capped?
     end
   end
 end
