@@ -1,3 +1,5 @@
+require 'scalarm/database/core/mongo_active_record'
+
 module Scalarm::Database::Model
 
   ##
