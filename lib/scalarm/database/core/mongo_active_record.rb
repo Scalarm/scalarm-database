@@ -3,6 +3,7 @@ require 'mongo'
 require 'json'
 require 'active_support/core_ext/object/deep_dup'
 require 'encryptor'
+require 'yaml'
 
 require_relative 'mongo_active_record_utils'
 require_relative '../logger'
@@ -59,9 +60,12 @@ module Scalarm
       # object instance constructor based on map of attributes (json document is good example)
       def initialize(attributes)
         @attributes = {}
+        # here we store all hash-like parameters to use them like hash but store them as strings
+        @__hash_attributes = attributes['__hash_attributes'] || []
 
-        attributes.each do |parameter_name, parameter_value|
-          #parameter_value = BSON::ObjectId(parameter_value) if parameter_name.end_with?("_id")
+        if @__hash_attributes.include? parameter_name.to_s
+          @attributes[parameter_name.to_s] = YAML.parse parameter_value
+        else
           @attributes[parameter_name.to_s] = parameter_value
         end
       end
@@ -87,6 +91,13 @@ module Scalarm
       end
 
       def set_attribute(attribute, value)
+        if value.is_a? Hash and
+            (not @__hash_attributes.include? attribute) and
+              value.to_s.include?(".")
+
+          @__hash_attributes << attribute
+        end
+
         @attributes[attribute] = value
       end
 
@@ -95,12 +106,19 @@ module Scalarm
       end
 
       def _delete_attribute(attribute)
+        @__hash_attributes.delete attribute
+
         @attributes.delete(attribute)
       end
 
       # save/update json document in db based on attributes
       # if this is new object instance - _id attribute will be added to attributes
       def save
+        @__hash_attributes.each do |hash_attr|
+          @attributes[hash_attr] = @attributes[hash_attr].to_yaml
+        end
+        @attributes['__hash_attributes'] = @__hash_attributes
+
         if @attributes.include? '_id'
           self.class.collection.update({'_id' => @attributes['_id']}, @attributes, {upsert: true})
         else
@@ -282,11 +300,13 @@ module Scalarm
       end
 
       def self.to_a
+        add_hash_attributes_to_query_fields
+
         results = self.collection.find(@conditions || {}, @options || {}).map do |attributes|
           self.new(attributes)
         end
 
-        @conditions = {}; @options = {}
+        reset_search_options_and_conditions
 
         results
       end
@@ -298,7 +318,7 @@ module Scalarm
       def self.count
         results = self.collection.count(query: @conditions || {})
 
-        @conditions = {}; @options = {}
+        reset_search_options_and_conditions
 
         results
       end
@@ -371,6 +391,16 @@ module Scalarm
                                    })['seq']
       end
 
+      def self.add_hash_attributes_to_fields
+        if (not @options.nil?) and @options.include?(:fields)
+          @options['__hash_attributes'] = 1
+        end
+      end
+
+      def self.add_hash_attributes_to_query_fields
+        @conditions = {}
+        @options = {}
+      end
     end
   end
 end
