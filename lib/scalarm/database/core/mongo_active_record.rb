@@ -61,8 +61,11 @@ module Scalarm
         @attributes = {}
 
         attributes.each do |parameter_name, parameter_value|
-          #parameter_value = BSON::ObjectId(parameter_value) if parameter_name.end_with?("_id")
-          @attributes[parameter_name.to_s] = parameter_value
+          parameter_name = parameter_name.to_s
+          if parameter_name.end_with?('_id') and parameter_value.kind_of?(String)
+            parameter_value = BSON::ObjectId(parameter_value) rescue parameter_value
+          end
+          @attributes[parameter_name] = parameter_value
         end
       end
 
@@ -87,11 +90,17 @@ module Scalarm
       end
 
       def set_attribute(attribute, value)
+        value = BSON::ObjectId(value) rescue value if attribute.end_with?('_id') and value.kind_of?(String)
         @attributes[attribute] = value
       end
 
       def get_attribute(attribute)
-        attributes[attribute]
+        value = attributes[attribute]
+        if attribute.end_with?('_id') and value.kind_of?(String)
+          BSON::ObjectId(value) rescue value
+        else
+          value
+        end
       end
 
       def _delete_attribute(attribute)

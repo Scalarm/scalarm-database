@@ -13,6 +13,5 @@ module Scalarm::Database::Model
   # last_update:: timestamp of last authentication made with this session
   class UserSession < Scalarm::Database::MongoActiveRecord
     use_collection 'users_session'
-    disable_ids_auto_convert!
   end
 end

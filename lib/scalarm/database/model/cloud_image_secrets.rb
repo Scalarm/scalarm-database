@@ -10,7 +10,7 @@ module Scalarm::Database::Model
   #
   # ==== Fields:
   # user_id:: _ObjectId_ - ScalarmUser id
-  # image_id:: _string_ - id of image in Cloud (NOTE: not a foreign-key!)
+  # image_identifier:: _string_ - id of image in Cloud
   # experiment_id:: _ObjectId_ - DataFarmingExperiment id
   # cloud_name::  _string_ - cloud service identifier;
   #               one of Cloud short names, e.g. 'pl_cloud', 'amazon'

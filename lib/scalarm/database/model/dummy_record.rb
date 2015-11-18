@@ -8,7 +8,7 @@ module Scalarm::Database::Model
   # ==== Fields:
   # Contains fields from SimulationManagerRecords
   #
-  # res_id:: string - a dummy resource identifier (NOTE: not a foreign key)
+  # res_name:: string - a dummy resource identifier
   class DummyRecord < Scalarm::Database::MongoActiveRecord
     use_collection 'dummy_records'
   end

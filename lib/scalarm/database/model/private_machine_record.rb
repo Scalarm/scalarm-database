@@ -17,9 +17,6 @@ module Scalarm::Database::Model
 
     attr_join :credentials, PrivateMachineCredentials
     attr_join :experiment, Experiment
-
-    disable_ids_auto_convert!
-
   end
 end
 

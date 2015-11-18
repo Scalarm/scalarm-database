@@ -15,7 +15,7 @@ module Scalarm::Database::Model
   # cloud_name:: string - name of the cloud, e.g. 'pl_cloud', 'amazon'
   # image_secrets_id:: ObjectId - id of CloudImageSecrets;
   #     a foreign key to access information about image that was instatiated
-  # vm_id:: string - instance id of the vm
+  # vm_identifier:: string - instance id of the vm
   # pid:: integer - PID of SimulationManager application (if executed)
   # instance_type:: string - name of instance type
   #
@@ -23,7 +23,6 @@ module Scalarm::Database::Model
   # public_ssh_port: string - port of public machine redirecting to ssh private port
   class CloudVmRecord < Scalarm::Database::MongoActiveRecord
     use_collection 'vm_records'
-    disable_ids_auto_convert!
 
     attr_join :image_secrets, CloudImageSecrets
 
@@ -33,7 +32,7 @@ module Scalarm::Database::Model
 
     # additional info for specific cloud should be provided by CloudClient
     def to_s
-      "Id: #{vm_id}, Launched at: #{created_at}, Time limit: #{time_limit}, "
+      "Id: #{vm_identifier}, Launched at: #{created_at}, Time limit: #{time_limit}, "
       "SSH address: #{public_host}:#{public_ssh_port}"
     end
   end

@@ -7,9 +7,9 @@ module Scalarm::Database::Model
   ##
   # Represents job in any of PL-Grid resources manager.
   # ==== Fields:
-  # job_id:: string - queue system specific id of the job
+  # job_identifier:: string - queue system specific id of the job
   # scheduler_type:: string - short name of scheduler, eg. pbs
-  # grant_id::
+  # grant_identifier::
   # nodes:: nodes count
   # ppn:: cores per node count
   # plgrid_host:: host of PL-Grid, eg. zeus.cyfronet.pl
@@ -19,7 +19,6 @@ module Scalarm::Database::Model
     # SimulationManagerRecord
 
     use_collection 'grid_jobs'
-    disable_ids_auto_convert!
 
     attr_join :experiment, Experiment
 
@@ -28,7 +27,7 @@ module Scalarm::Database::Model
     end
 
     def to_s
-      "JobId: #{job_id}, Scheduled at: #{created_at}, ExperimentId: #{experiment_id}"
+      "JobId: #{job_identifier}, Scheduled at: #{created_at}, ExperimentId: #{experiment_id}"
     end
 
   end

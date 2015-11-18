@@ -35,12 +35,6 @@ module Scalarm
           end
         end
 
-        def disable_ids_auto_convert!
-          define_singleton_method :ids_auto_convert do
-            false
-          end
-        end
-
         def parse_json_if_string(attribute)
           define_method attribute do
             Utils::parse_json_if_string(get_attribute(attribute.to_s))
