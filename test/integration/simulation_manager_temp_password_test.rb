@@ -4,7 +4,7 @@ require_relative '../db_helper'
 
 require 'scalarm/database/model/simulation_manager_temp_password'
 
-class LoggerTest < MiniTest::Test
+class SimulationManagerTempPasswordTest < MiniTest::Test
   include DBHelper
 
   def setup
