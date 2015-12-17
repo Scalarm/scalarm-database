@@ -102,6 +102,8 @@ module Scalarm::Database::Model
     attr_join :simulation, Simulation
     attr_join :user, ScalarmUser
 
+    create_index 'user_id'
+
     ID_DELIM = '___'
 
     def simulation_runs

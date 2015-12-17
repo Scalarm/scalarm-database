@@ -41,6 +41,16 @@ module Scalarm
           end
         end
 
+        def create_index(attribute)
+          @_indexed_attributes << attribute
+          # puts "Create index: #{attribute} - #{@_indexed_attributes}"
+        end
+
+        def inherited(subclass)
+          instance_var = "@_indexed_attributes"
+          subclass.instance_variable_set(instance_var, [])
+        end
+
       end
     end
   end
