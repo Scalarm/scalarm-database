@@ -10,6 +10,9 @@ module Scalarm::Database::Model
   # global_pid::  _string_ globally uniqe identifier of thread that set the lock;
   #               format: <host_name_or_ip>_<pid>_<thread_id>
   class MongoLockRecord < Scalarm::Database::MongoActiveRecord
+
+    create_index "name"
+
     def self.collection_name
       'mongo_locks'
     end

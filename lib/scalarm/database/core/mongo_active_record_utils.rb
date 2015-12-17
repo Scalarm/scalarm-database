@@ -41,6 +41,23 @@ module Scalarm
           end
         end
 
+        ##
+        # Mark the given attribute to be indexed. The actual index in mongodb will be created by calling build_indexes
+        # rake task in Scalarm experiment manager.
+        # @param [String or Hash] String-type value will create a single-key index
+        #   - Hash-type value will create a compound-index ()https://docs.mongodb.org/v3.0/core/index-compound/)
+        def create_index(attribute)
+          @_indexed_attributes << attribute
+        end
+
+        ##
+        # Callback to add _indexed_attributes instance variable to all classes inherited from MongoActiveRecord
+        # http://ruby-doc.org/core-2.2.0/Class.html#method-i-inherited
+        def inherited(subclass)
+          instance_var = "@_indexed_attributes"
+          subclass.instance_variable_set(instance_var, [])
+        end
+
       end
     end
   end

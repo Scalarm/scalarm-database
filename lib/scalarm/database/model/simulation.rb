@@ -37,6 +37,8 @@ module Scalarm::Database::Model
     attr_join :output_reader, SimulationOutputReader
     attr_join :progress_monitor, SimulationProgressMonitor
 
+    create_index({user_id: 1, name: 1})
+
     def set_simulation_binaries(filename, binary_data)
       @attributes['simulation_binaries_id'] = @@grid  .put(binary_data, :filename => filename)
     end

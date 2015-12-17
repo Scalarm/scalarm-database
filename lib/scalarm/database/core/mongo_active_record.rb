@@ -19,6 +19,11 @@ module Scalarm
       @options = {}
       @@client = nil
 
+      class << self
+        attr_accessor :_indexed_attributes
+      end
+      @_indexed_attributes = []
+
       def self.ids_auto_convert
         true
       end

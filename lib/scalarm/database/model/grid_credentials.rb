@@ -23,6 +23,8 @@ module Scalarm::Database::Model
     use_collection 'grid_credentials'
     attr_join :user, ScalarmUser
 
+    create_index "user_id"
+
     def password
       if hashed_password
         decipher = GridCredentials::decipher
