@@ -13,5 +13,7 @@ module Scalarm::Database::Model
   # last_update:: timestamp of last authentication made with this session
   class UserSession < Scalarm::Database::MongoActiveRecord
     use_collection 'users_session'
+
+    create_index({session_id: 1, uuid: 1})
   end
 end
