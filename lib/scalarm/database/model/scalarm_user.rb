@@ -11,6 +11,9 @@ module Scalarm::Database::Model
   class ScalarmUser < Scalarm::Database::MongoActiveRecord
     use_collection 'scalarm_users'
 
+    create_index "login"
+
+
     ##
     # A setter for a user password, it stores only password digest,
     # so original password cannot be restored.
