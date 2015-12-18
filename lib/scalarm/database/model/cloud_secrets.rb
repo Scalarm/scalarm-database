@@ -15,5 +15,7 @@ module Scalarm::Database::Model
     class CloudSecrets < Scalarm::Database::EncryptedMongoActiveRecord
       use_collection 'cloud_secrets'
       attr_join :user, ScalarmUser
+
+      create_index({cloud_name: 1, user_id: 1})
     end
 end

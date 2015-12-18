@@ -19,6 +19,10 @@ module Scalarm::Database::Model
     # TODO attr_join by const
     # attr_join :experiment, Experiment
 
+    create_index "experiment_id"
+    create_index "sm_uuid"
+    create_index "user_id"
+
     def self.create_new_password_for(sm_uuid, experiment_id)
       password = SecureRandom.base64
       temp_pass = self.new(sm_uuid: sm_uuid,

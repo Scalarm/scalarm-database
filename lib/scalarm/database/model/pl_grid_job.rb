@@ -23,7 +23,7 @@ module Scalarm::Database::Model
     attr_join :experiment, Experiment
 
     def credentials
-      @credentials ||= GridCredentials.find_by_user_id(user_id)
+      @credentials ||= GridCredentials.where(user_id: user_id).first
     end
 
     def to_s

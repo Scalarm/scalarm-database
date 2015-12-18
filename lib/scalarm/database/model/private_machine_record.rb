@@ -15,6 +15,8 @@ module Scalarm::Database::Model
     # SimulationManagerRecord
     use_collection 'private_machine_records'
 
+    create_index({user_id: 1, experiment_id: 1, infrastructure: 1})
+
     attr_join :credentials, PrivateMachineCredentials
     attr_join :experiment, Experiment
   end

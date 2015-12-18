@@ -19,6 +19,8 @@ module Scalarm::Database::Model
 
     attr_join :user, ScalarmUser
 
+    create_index({user_id: 1, host: 1})
+
     def machine_desc
       "#{login}@#{host}:#{port}"
     end
