@@ -103,6 +103,8 @@ module Scalarm::Database::Model
     attr_join :user, ScalarmUser
 
     create_index 'user_id'
+    create_index 'simulation_id'
+    create_index 'is_running'
 
     ID_DELIM = '___'
 
