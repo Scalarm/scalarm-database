@@ -105,6 +105,7 @@ module Scalarm::Database::Model
     create_index 'user_id'
     create_index 'simulation_id'
     create_index 'is_running'
+    create_index 'shared_with'
 
     ID_DELIM = '___'
 
