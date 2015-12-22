@@ -51,7 +51,7 @@ module Scalarm::Database
       elsif attributes.include?('arguments')
         attributes['arguments']
       else
-        ""
+        nil
       end
     end
 
@@ -61,7 +61,7 @@ module Scalarm::Database
       elsif attributes.include?('values')
         attributes['values']
       else
-        ""
+        nil
       end
     end
 

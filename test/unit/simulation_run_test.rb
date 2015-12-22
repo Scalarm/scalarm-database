@@ -1,9 +1,10 @@
 require 'minitest/autorun'
 require 'mocha'
+require 'scalarm/database/model/experiment'
 
 class SimulationRunTest < MiniTest::Test
 
-  def test_proper_types_in_input_parameters
+  def test_types_in_input_parameters_should_be_remained
     simulation_run = Scalarm::Database::Model::Experiment.new({}).simulation_runs.new({ "input_parameters" => {
         'main_category___main_group___parameter1' => 0,
         'main_category___main_group___parameter2' => -100.2,
@@ -18,31 +19,35 @@ class SimulationRunTest < MiniTest::Test
     assert_equal "abcd", input_params['main_category___main_group___parameter3']
   end
 
-  def test_arguments_return
+  def test_arguments_method_response
     simulation_run = Scalarm::Database::Model::Experiment.new({}).simulation_runs.new({ "input_parameters" => {
         'parameter1' => 0,
         'parameter2' => -100.2,
         'parameter3' => "abcd"
     }})
 
-    assert_equal simulation_run.arguments, 'parameter1,parameter2,parameter3'
+    input_parameters = simulation_run.arguments
+
+    assert_equal 'parameter1,parameter2,parameter3', input_parameters
   end
 
-  def test_values_return
+  def test_values_method_response
     simulation_run = Scalarm::Database::Model::Experiment.new({}).simulation_runs.new({ "input_parameters" => {
         'main_category___main_group___parameter1' => 0,
         'main_category___main_group___parameter2' => -100.2,
         'main_category___main_group___parameter3' => "abcd"
     }})
 
-    assert_equal simulation_run.values, '0,-100.2,abcd'
+    input_values = simulation_run.values
+
+    assert_equal '0,-100.2,abcd', input_values
   end
 
-  def test_input_parameters_return_based_on_arguments_and_values
+  def test_input_parameters_should_return_strings_when_based_on_arguments_and_values
     simulation_run = Scalarm::Database::Model::Experiment.new({}).simulation_runs.new({
         "arguments" => "parameter1,parameter2,parameter3",
         "values" => "0,-100.2,abcd"
-                                                             })
+                                                                                      })
 
     input_params = simulation_run.input_parameters
 
