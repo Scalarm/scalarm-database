@@ -318,9 +318,6 @@ module Scalarm
       end
 
       # INITIALIZATION STUFF
-      def self.init(*args)
-
-      end
 
       ##
       # Backward-compatible alias for connection_init
