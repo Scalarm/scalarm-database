@@ -20,6 +20,6 @@ module Scalarm::Database::Model
     use_collection 'cloud_image_secrets'
     attr_join :user, ScalarmUser
 
-    create_index({user_id: 1, cloud_name:1})
+    create_index({user_id: 1, cloud_name: 1})
   end
 end

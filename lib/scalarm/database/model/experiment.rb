@@ -102,10 +102,10 @@ module Scalarm::Database::Model
     attr_join :simulation, Simulation
     attr_join :user, ScalarmUser
 
-    create_index 'user_id'
-    create_index 'simulation_id'
-    create_index 'is_running'
-    create_index 'shared_with'
+    create_index "user_id"
+    create_index "simulation_id"
+    create_index "is_running"
+    create_index "shared_with"
 
     ID_DELIM = '___'
 
