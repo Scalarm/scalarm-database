@@ -27,5 +27,5 @@ and Scalarm model classes}
   spec.add_runtime_dependency 'bson'
   spec.add_runtime_dependency 'bson_ext'
   spec.add_runtime_dependency 'mongo'
-  spec.add_runtime_dependency 'encryptor'
+  spec.add_runtime_dependency 'encryptor', '1.3.0'
 end
