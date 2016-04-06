@@ -333,10 +333,16 @@ module Scalarm
       # @param [Hash] options additional params: Symbol => Object
       #  - username: username to use if using authentication; leave nil to disable auth
       #  - password: password to use if using authentication; leave nit to disable auth
+      #  - connect_timeout: MongoClient connect_timeout option, default: 15.0
+      #  - pool_size: MongoClient pool_size option, default: 12
+      #  - pool_timeout: MongoClient pool_timeout_option, default: 30.0
       def self.connection_init(mongodb_address, db_name, options=nil)
         options ||= {}
         username = options[:username]
         password = options[:password]
+        connect_timeout = options[:connect_timeout] || 15.0
+        pool_size = options[:pool_size] || 12
+        pool_timeout = options[:pool_timeout] || 30.0
 
         begin
           Logger.debug("MongoActiveRecord initialized with URL '#{mongodb_address}' and DB '#{db_name}'")
@@ -344,7 +350,7 @@ module Scalarm
           mongo_host, mongo_port = mongodb_address.split(':')
           @@client = MongoClient.new(mongo_host,
                                      mongo_port,
-                                     connect_timeout: 5.0, pool_size: 4, pool_timeout: 10.0
+                                     connect_timeout: connect_timeout, pool_size: pool_size, pool_timeout: pool_timeout
           )
 
           @@username = username
