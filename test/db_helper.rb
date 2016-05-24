@@ -19,8 +19,6 @@ module DBHelper
   def teardown
     Scalarm::Database::MongoActiveRecord.connection_init('localhost', DATABASE_NAME)
     db = Scalarm::Database::MongoActiveRecord.get_database(DATABASE_NAME)
-    db.collections.each do |collection|
-      collection.remove unless collection.name.start_with? 'system.' or collection.capped?
-    end
+    db.drop
   end
 end

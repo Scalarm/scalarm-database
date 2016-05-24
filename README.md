@@ -1,6 +1,6 @@
 # Scalarm::Database
 
-TODO: Write a gem description
+This is a very simple ODM (Object-Document Mapper), which provides API very similar to ActiveRecord (in particular where, find, count methods) but it works with MongoDB.
 
 ## Installation
 

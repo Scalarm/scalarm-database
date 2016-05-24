@@ -10,7 +10,7 @@ class ConnectionInitTest < MiniTest::Test
     assert (init_result == true), "connection: #{init_result.to_s}, is mongo running on localhost?"
     collection = Scalarm::Database::MongoActiveRecord.get_collection('test1')
     refute_nil collection
-    collection.save(hello: 'world')
+    collection.insert_one(hello: 'world')
     record = collection.find({hello: 'world'}, {limit: 1}).first
     assert 'world', record['hello']
   end

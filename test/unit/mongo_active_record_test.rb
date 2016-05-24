@@ -14,19 +14,19 @@ class MongoActiveRecordTest < MiniTest::Test
   end
 
   def test_find_by_id_invalid
-    assert_raises(BSON::InvalidObjectId) do
+    assert_raises(BSON::ObjectId::Invalid) do
       Scalarm::Database::MongoActiveRecord.find_by_id(nil)
     end
 
-    assert_raises(BSON::InvalidObjectId) do
+    assert_raises(BSON::ObjectId::Invalid) do
       Scalarm::Database::MongoActiveRecord.find_by_id('bad_idea')
     end
 
-    assert_raises(BSON::InvalidObjectId) do
+    assert_raises(BSON::ObjectId::Invalid) do
       Scalarm::Database::MongoActiveRecord.find_all_by_id(nil)
     end
 
-    assert_raises(BSON::InvalidObjectId) do
+    assert_raises(BSON::ObjectId::Invalid) do
       Scalarm::Database::MongoActiveRecord.find_all_by_id('worse_idea')
     end
 
@@ -34,7 +34,7 @@ class MongoActiveRecordTest < MiniTest::Test
 
   def test_mixed_attributes_new
     collection = mock do
-      expects(:save).with('a'=>2, 'b'=>3)
+      expects(:insert_one).with('a'=>2, 'b'=>3)
     end
 
     SomeRecord.expects(:collection).returns(collection)

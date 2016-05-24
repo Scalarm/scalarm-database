@@ -40,23 +40,49 @@ module Scalarm::Database::Model
     create_index({user_id: 1, name: 1})
 
     def set_simulation_binaries(filename, binary_data)
-      @attributes['simulation_binaries_id'] = @@grid  .put(binary_data, :filename => filename)
+      file = Grid::File.new(binary_data, filename: filename, metadata: { size: binary_data.size })
+      @attributes['simulation_binaries_id'] = @@binary_store.insert_one(file).to_s
     end
 
     def simulation_binaries
-      @@grid.get(self.simulation_binaries_id).read
+      file = @@binary_store.find_one(_id: self.simulation_binaries_id)
+      if file.nil?
+        nil
+      else
+        file.data
+      end
     end
 
     def simulation_binaries_name
-      @@grid.get(self.simulation_binaries_id).filename
+      file = @@binary_store.find_one(_id: self.simulation_binaries_id)
+      if file.nil?
+        nil
+      else
+        file.info.filename
+      end
     end
 
     def simulation_binaries_size
-      @@grid.get(self.simulation_binaries_id).file_length
+      file = @@binary_store.find_one(_id: self.simulation_binaries_id)
+      if file.nil?
+        nil
+      else
+        metadata = file.info.metadata
+        if metadata.has_key?("size")
+          metadata["size"]
+        else
+          file.data.size
+        end
+      end
     end
 
     def destroy
-      @@grid.delete self.simulation_binaries_id
+      begin
+        @@binary_store.delete(self.simulation_binaries_id)
+      rescue => e
+        # if there is no file with this id then it is ok
+      end
+
       super
     end
 

@@ -58,7 +58,7 @@ module Scalarm
       end
 
       def self.get_collection(collection_name)
-        @@db.collection(collection_name)
+        @@db[collection_name]
       end
 
       # object instance constructor based on map of attributes (json document is good example)
@@ -116,10 +116,12 @@ module Scalarm
       # if this is new object instance - _id attribute will be added to attributes
       def save
         if @attributes.include? '_id'
-          self.class.collection.update({'_id' => @attributes['_id']}, @attributes, {upsert: true})
+          self.class.collection.update_one({'_id' => @attributes['_id']}, @attributes, {upsert: true})
         else
-          id = self.class.collection.save(@attributes)
-          @attributes['_id'] = id
+          insert_result = self.class.collection.insert_one(@attributes)
+          if not insert_result.nil?
+            @attributes['_id'] = insert_result.inserted_id
+          end
         end
         self
       end
@@ -181,7 +183,7 @@ module Scalarm
 
       # returns a reference to mongo collection based on collection_name abstract method
       def self.collection
-        class_collection = @@db.collection(self.collection_name)
+        class_collection = @@db[self.collection_name]
         raise "Error while connecting to #{self.collection_name}" if class_collection.nil?
 
         class_collection
@@ -246,10 +248,15 @@ module Scalarm
         if @@client.nil?
           nil
         else
-          db = @@client[db_name]
+          current_db = @@client.database.name
+
+          db = @@client.use(db_name).database
           if username and password and not db_authenticated?(db_name)
             db.authenticate(username, password)
           end
+
+          @@client.use(current_db)
+
           db
         end
       end
@@ -310,7 +317,7 @@ module Scalarm
       end
 
       def self.count
-        results = self.collection.count(query: @conditions || {})
+        results = self.collection.count(@conditions || {})
 
         @conditions = {}; @options = {}
 
@@ -347,22 +354,23 @@ module Scalarm
         begin
           Logger.debug("MongoActiveRecord initialized with URL '#{mongodb_address}' and DB '#{db_name}'")
 
-          mongo_host, mongo_port = mongodb_address.split(':')
-          @@client = MongoClient.new(mongo_host,
-                                     mongo_port,
-                                     connect_timeout: connect_timeout, pool_size: pool_size, pool_timeout: pool_timeout
-          )
-
           @@username = username
           @@password = password
-          @@db = get_database(db_name, username, password)
 
-          @@grid = Mongo::Grid.new(@@db)
+          @@client = Client.new( [mongodb_address],
+                                 database: db_name,
+                                 user: username,
+                                 password: password,
+                                # connect_timeout: connect_timeout, pool_size: pool_size, pool_timeout: pool_timeout
+          )
+
+          @@db = @@client.database
+          @@binary_store = @@db.fs
 
           return true
         rescue => e
           Logger.debug "Could not initialize connection with MongoDB --- #{e}"
-          @@client = @@db = @@grid = nil
+          @@client = @@db = @@binary_store = nil
 
           # changed Scalarm::ServiceCore: connection_init failure is fatal
           raise
@@ -383,12 +391,7 @@ module Scalarm
 
       def self.get_next_sequence(name)
         collection = MongoActiveRecord.get_collection('counters')
-        collection.find_and_modify({
-                                       query: { _id: name },
-                                       update: { '$inc' => { seq: 1 } },
-                                       new: true,
-                                       upsert: true
-                                   })['seq']
+        collection.find_one_and_update({ _id: name }, { "$inc" => { seq: 1 }}, upsert: true)['seq']
       end
 
     end
