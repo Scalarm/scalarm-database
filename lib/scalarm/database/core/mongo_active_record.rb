@@ -395,7 +395,13 @@ module Scalarm
 
       def self.get_next_sequence(name)
         collection = MongoActiveRecord.get_collection('counters')
-        collection.find_one_and_update({ _id: name }, { "$inc" => { seq: 1 }}, upsert: true)['seq']
+        doc = collection.find_one_and_update({ _id: name }, { "$inc" => { seq: 1 }}, upsert: true)
+
+        if doc.nil?
+          doc = collection.find_one_and_update({ _id: name }, { "$inc" => { seq: 1 }}, upsert: true)
+        end
+
+        doc['seq']
       end
 
     end
