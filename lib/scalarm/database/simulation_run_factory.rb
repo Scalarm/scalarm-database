@@ -83,9 +83,9 @@ module Scalarm::Database
       raise('No Simulation Run DB available') if collection.nil?
 
       collection.indexes.create_one({"index" => 1}, {unique: true})
-      collection.indexes.create_one({"sm_uuid" => 1}, {unique: true})
-      collection.indexes.create_one({"result" => 1}, {unique: true})
-      collection.indexes.create_one({is_done: 1, to_sent: 1}, {unique: true})
+      collection.indexes.create_one({"sm_uuid" => 1})
+      collection.indexes.create_one({"result" => 1})
+      collection.indexes.create_one({is_done: 1, to_sent: 1})
     end
   end
 
