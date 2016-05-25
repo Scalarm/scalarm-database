@@ -44,7 +44,7 @@ class MongoActiveRecordTest < MiniTest::Test
 
   def test_mixed_attributes_modify
     collection = mock do
-      expects(:update).with({'_id'=>1}, {'_id'=>1, 'a'=>2}, {:upsert => true})
+      expects(:update_one).with({'_id'=>1}, {'_id'=>1, 'a'=>2}, {:upsert => true})
     end
 
     SomeRecord.expects(:collection).returns(collection)

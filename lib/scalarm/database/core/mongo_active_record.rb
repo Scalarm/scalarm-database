@@ -353,6 +353,9 @@ module Scalarm
 
         begin
           Logger.debug("MongoActiveRecord initialized with URL '#{mongodb_address}' and DB '#{db_name}'")
+          Mongo::Logger.logger = Logger
+
+
 
           @@username = username
           @@password = password
@@ -361,7 +364,10 @@ module Scalarm
                                  database: db_name,
                                  user: username,
                                  password: password,
-                                # connect_timeout: connect_timeout, pool_size: pool_size, pool_timeout: pool_timeout
+                                 connect_timeout: connect_timeout,
+                                 min_pool_size: pool_size,
+                                 max_pool_size: 2*pool_size,
+                                 wait_queue_timeout: pool_timeout
           )
 
           @@db = @@client.database
