@@ -133,7 +133,7 @@ module Scalarm
       def destroy
         return if not @attributes.include? '_id'
 
-        self.class.collection.remove({ '_id' => @attributes['_id'] })
+        self.class.collection.delete_one({ '_id' => @attributes['_id'] })
         @attributes.delete('_id')
       end
 
@@ -214,7 +214,7 @@ module Scalarm
       end
 
       def self.destroy(selector)
-        self.collection.remove(selector)
+        self.collection.delete_many(selector)
       end
 
       def self.find_by_query(query)
@@ -354,8 +354,6 @@ module Scalarm
         begin
           Logger.debug("MongoActiveRecord initialized with URL '#{mongodb_address}' and DB '#{db_name}'")
           Mongo::Logger.logger = Logger
-
-
 
           @@username = username
           @@password = password
