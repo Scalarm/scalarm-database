@@ -24,7 +24,7 @@ and Scalarm model classes}
   spec.add_development_dependency 'mocha'
 
   spec.add_runtime_dependency 'activesupport'
-  spec.add_runtime_dependency 'bson'
+  spec.add_runtime_dependency 'bson', '4.2.1'
   spec.add_runtime_dependency 'bson_ext'
   spec.add_runtime_dependency 'mongo', '2.4.1'
   spec.add_runtime_dependency 'encryptor', '1.3.0'
