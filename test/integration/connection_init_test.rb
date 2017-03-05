@@ -4,8 +4,24 @@ require 'mocha/mini_test'
 require 'scalarm/database/core/mongo_active_record'
 
 class ConnectionInitTest < MiniTest::Test
+  def rails_mock
+    if not defined? Rails or Rails.methods.grep(/application/).empty?
+      secrets = mock('object')
+      secrets.stubs(:database).returns({})
+      application = mock('object')
+      application.stubs(:secrets).returns(secrets)
+
+      rails_module = Class.new(Object)
+      if not defined? Rails
+        ConnectionInitTest.const_set("Rails", rails_module)
+      end
+
+      Rails.stubs(:application).returns(application)
+    end
+  end
+
   def test_localhost_get_collection
-    # TODO: drop collection first
+    rails_mock
     db_config = Rails.application.secrets.database
     puts db_config
     default_mongodb_host = db_config['host'] || 'localhost'
